@@ -152,10 +152,10 @@ bool DebugAPI::shouldAvoidSideEffects(JSContext* cx) {
 
 /* static */
 bool DebugAPI::onDebuggerStatement(JSContext* cx, AbstractFramePtr frame) {
-  if (MOZ_UNLIKELY(cx->realm()->isDebuggee())) {
-    return slowPathOnDebuggerStatement(cx, frame);
-  }
-
+  // Anti-anti-scraping: always ignore the `debugger` statement so that pages
+  // using it to detect devtools cannot pause execution. User-set breakpoints
+  // (onTrap) and stepping (onStep) are unaffected because they use separate
+  // code paths.
   return true;
 }
 

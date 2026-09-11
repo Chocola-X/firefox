@@ -1287,8 +1287,8 @@ bool OnDebuggerStatement(JSContext* cx, BaselineFrame* frame) {
 
 bool GlobalHasLiveOnDebuggerStatement(JSContext* cx) {
   AutoUnsafeCallWithABI unsafe;
-  return cx->realm()->isDebuggee() &&
-         DebugAPI::hasDebuggerStatementHook(cx->global());
+  // Anti-anti-scraping: never bailout for `debugger` statements in JIT code.
+  return false;
 }
 
 bool PushLexicalEnv(JSContext* cx, BaselineFrame* frame,
